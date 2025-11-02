@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cẩm nang AI — Checklist tương tác</title>
+<style>
+  :root{
+    --bg:#ffffff; --card:#f7fbff; --accent:#0b61d1; --accent-2:#ff7b00;
+    --muted:#666; --success:#16a34a; --warn:#d97706; --danger:#dc2626;
+    --radius:12px; --pad:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    background:linear-gradient(180deg,#f3f6fb, #ffffff);
+    color:#0b1220;
+    font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  .wrapper{
+    padding:28px;
+    min-height:100vh;
+  }
+  .container{
+    max-width:920px;
+    margin:0 auto;
+    background:var(--card);
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 6px 20px rgba(11,18,32,0.08);
+  }
+  header{display:flex;gap:16px;align-items:center;margin-bottom:8px}
+  .logo{
+    width:64px;
+    height:64px;
+    background:var(--accent);
+    border-radius:10px;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:20px;
+    flex-shrink:0;
+  }
+  h1{margin:0;font-size:20px;line-height:1.3}
+  p.lead{margin:4px 0 18px;color:var(--muted);line-height:1.5}
+  .grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+  @media (max-width:880px){.grid{grid-template-columns:1fr;}}
+  .card{
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(11,18,32,0.04);
+  }
+  .section{
+    margin-bottom:14px;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid rgba(11,18,32,0.04);
+    background:#fafbfc;
+  }
+  .section h3{margin:0 0 6px;font-size:16px;color:var(--accent)}
+  .section p.small{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.4}
+  .item{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:8px 6px;
+    border-radius:8px;
+    background:#fff;
+    margin-bottom:6px;
+  }
+  .item:hover{background:#f8f9fa}
+  .item input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    margin-top:3px;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .item label{
+    font-size:14px;
+    color:#0b1220;
+    cursor:pointer;
+    line-height:1.5;
+  }
+  .rightpane{
+    position:sticky;
+    top:28px;
+    align-self:start;
+  }
+  .progress{
+    height:12px;
+    background:#eef4ff;
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .progress > i{
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    width:0%;
+    transition:width 0.3s ease;
+  }
+  .scorebig{font-size:28px;font-weight:700;margin:10px 0}
+  .eval{
+    padding:10px;
+    border-radius:10px;
+    background:linear-gradient(180deg,rgba(11,97,209,0.06),transparent);
+    color:var(--accent);
+    font-weight:600;
+    line-height:1.5;
+    border-left:4px solid var(--accent);
+    transition:all 0.3s ease;
+  }
+  .btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  button{
+    border:0;
+    background:var(--accent);
+    color:#fff;
+    padding:10px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+    transition:opacity 0.2s;
+  }
+  button:hover{opacity:0.9}
+  button.alt{
+    background:#fff;
+    color:var(--accent);
+    border:1px solid rgba(11,97,209,0.3);
+  }
+  .small{font-size:12px;color:var(--muted);line-height:1.4}
+  footer{margin-top:14px;font-size:13px;color:var(--muted);padding-top:14px;border-top:1px solid rgba(11,18,32,0.06)}
+  .section-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .chip{
+    background:#f3f7ff;
+    padding:6px 8px;
+    border-radius:999px;
+    font-size:13px;
+    color:var(--accent);
+    white-space:nowrap;
+  }
+  .hint{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.4}
+  .case{
+    background:#fff7ed;
+    border-left:4px solid var(--warn);
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+    color:#7a4b00;
+    line-height:1.5;
+  }
+  .case ol{margin:8px 0 0 18px;padding-left:0}
+  .case li{margin:4px 0}
+  h2, h3{line-height:1.3}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="container" role="main">
+  <header>
+    <div class="logo">AI</div>
+    <div>
+      <h1>CẨM NANG AI — Bảng kiểm tự đánh giá</h1>
+      <p class="lead">Tick các mục phù hợp với thói quen dùng AI của bạn. Hệ thống sẽ tính điểm và cho bạn phản hồi tức thời.</p>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- left: checklist -->
+    <div>
+      <div class="card" aria-labelledby="title-checklist">
+        <h2 id="title-checklist" style="margin-top:0;margin-bottom:12px">Checklist</h2>
+        <p class="small" style="margin-bottom:16px">Chia theo 4 nhóm: Cá nhân hóa, Mục đích, Minh bạch, Kiểm chứng & Đạo đức.</p>
+
+        <!-- Section 1 -->
+        <div class="section" data-section="personal">
+          <h3>1. Cá nhân hóa & Phát triển năng lực tự học</h3>
+          <p class="small">AI giúp cá nhân hóa nếu bạn biết cách yêu cầu và phản hồi.</p>
+          <div class="item"><input type="checkbox" data-section="personal" id="p1"><label for="p1">Tôi dùng AI để xây lộ trình học cá nhân.</label></div>
+          <div class="item"><input type="checkbox" data-section="personal" id="p2"><label for="p2">Tôi ghi chú & tổng hợp lại kiến thức sau khi dùng AI.</label></div>
+          <div class="item"><input type="checkbox" data-section="personal" id="p3"><label for="p3">Tôi nhận thấy năng lực tự học cải thiện khi dùng AI chủ động.</label></div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section" data-section="purpose">
+          <h3>2. Mục đích sử dụng</h3>
+          <p class="small">Bạn dùng AI để hỗ trợ đúng việc (tra cứu, luyện tập, lập kế hoạch...).</p>
+          <div class="item"><input type="checkbox" data-section="purpose" id="m1"><label for="m1">Tôi chỉ dùng AI để hỗ trợ hiểu bài, tra cứu hoặc luyện tập.</label></div>
+          <div class="item"><input type="checkbox" data-section="purpose" id="m2"><label for="m2">Tôi luôn xác định rõ mục tiêu trước khi dùng AI.</label></div>
+          <div class="item"><input type="checkbox" data-section="purpose" id="m3"><label for="m3">Tôi thử nghiệm nhiều prompt để đạt mục tiêu học cụ thể.</label></div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section" data-section="transparency">
+          <h3>3. Minh bạch & Nhận diện nguồn</h3>
+          <p class="small">Ghi nhận vai trò AI, trích dẫn khi cần.</p>
+          <div class="item"><input type="checkbox" data-section="transparency" id="t1"><label for="t1">Tôi khai báo rõ đã sử dụng công cụ AI.</label></div>
+          <div class="item"><input type="checkbox" data-section="transparency" id="t2"><label for="t2">Tôi mô tả ngắn cách tôi đã sử dụng AI (gợi ý, thảo luận, tổng hợp...)</label></div>
+          <div class="item"><input type="checkbox" data-section="transparency" id="t3"><label for="t3">Tôi trích dẫn/ghi chú khi AI cung cấp nội dung cụ thể.</label></div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="section" data-section="ethics">
+          <h3>4. Kiểm chứng & Đạo đức học thuật</h3>
+          <p class="small">Phản biện, kiểm tra nguồn và không sao chép máy móc.</p>
+          <div class="item"><input type="checkbox" data-section="ethics" id="e1"><label for="e1">Tôi so sánh thông tin AI đưa ra với nguồn đáng tin cậy khác.</label></div>
+          <div class="item"><input type="checkbox" data-section="ethics" id="e2"><label for="e2">Tôi không nộp bài sao chép nguyên văn từ AI.</label></div>
+          <div class="item"><input type="checkbox" data-section="ethics" id="e3"><label for="e3">Tôi đọc kỹ, kiểm tra logic/lỗi học thuật trong kết quả AI.</label></div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px">
+          <button id="saveBtn" class="alt">💾 Lưu trạng thái</button>
+          <button id="resetBtn" class="alt">🔄 Đặt lại</button>
+        </div>
+        <div class="hint">Kết quả tự cập nhật khi bạn tick/untick (hoạt động offline).</div>
+      </div>
+    </div>
+
+    <!-- right: evaluation pane -->
+    <aside class="rightpane">
+      <div class="card">
+        <h3 style="margin-bottom:8px">Kết quả & Đánh giá</h3>
+        <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <div>
+            <div class="scorebig" id="scoreText">0%</div>
+            <div class="small">(<span id="checkedCount">0</span> / <span id="totalCount">0</span> mục)</div>
+          </div>
+        </div>
+
+        <div id="evalBox" class="eval" style="margin-top:10px">Chưa có đánh giá — tick một vài mục để nhận phản hồi.</div>
+
+        <div class="section-stats" id="sectionChips" aria-hidden="true" style="margin-top:10px"></div>
+
+        <div style="margin-top:12px">
+          <strong>Gợi ý cải thiện</strong>
+          <div id="advice" class="hint">—</div>
+        </div>
+
+        <div class="btns">
+          <button id="exportBtn">📥 Xuất JSON</button>
+          <button id="shareBtn" class="alt">📋 Sao chép</button>
+        </div>
+
+        <div style="margin-top:10px">
+          <small class="small">Bạn có thể in ra hoặc lưu thành PDF. Dữ liệu lưu cục bộ trên trình duyệt.</small>
+        </div>
+
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="card">
+        <h3 style="margin-bottom:8px">💡 Mini tình huống</h3>
+        <div class="case">
+          <strong>Tình huống:</strong> AI cung cấp một con số/điều kiện không có nguồn. Bạn sẽ làm gì?
+          <ol>
+            <li>Tìm nguồn xác minh</li>
+            <li>So sánh với kiến thức đã học</li>
+            <li>Nếu cần, chỉnh sửa và ghi chú phần AI đã giúp</li>
+          </ol>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <footer>
+    <div class="small">Phiên bản demo — chỉnh sửa nội dung checklist & ngôn ngữ theo nhu cầu của bạn.</div>
+  </footer>
+</div>
+</div>
+
+<script>
+(() => {
+  // Collect checkboxes
+  const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"][data-section]'));
+  const totalCountEl = document.getElementById('totalCount');
+  const checkedCountEl = document.getElementById('checkedCount');
+  const progressBar = document.getElementById('progressBar');
+  const scoreText = document.getElementById('scoreText');
+  const evalBox = document.getElementById('evalBox');
+  const adviceEl = document.getElementById('advice');
+  const sectionChips = document.getElementById('sectionChips');
+  const saveBtn = document.getElementById('saveBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const shareBtn = document.getElementById('shareBtn');
+
+  const sections = ['personal','purpose','transparency','ethics'];
+
+  // set counts
+  const total = checkboxes.length;
+  totalCountEl.textContent = total;
+
+  // Utilities
+  function calc() {
+    const checked = checkboxes.filter(cb => cb.checked);
+    const count = checked.length;
+    const pct = total ? Math.round((count/total)*100) : 0;
+    checkedCountEl.textContent = count;
+    scoreText.textContent = pct + '%';
+    progressBar.style.width = pct + '%';
+    // Eval message
+    let msg = '';
+    let color = '';
+    let tip = '';
+    if (pct >= 90) {
+      msg = '🎉 Xuất sắc — Bạn là người dùng AI có trách nhiệm và hiệu quả!';
+      color = 'var(--success)';
+      tip = 'Tiếp tục duy trì: chia sẻ kinh nghiệm cho bạn bè và giảng viên.';
+    } else if (pct >= 80) {
+      msg = '👍 Tốt — Bạn dùng AI khá tốt nhưng còn vài điểm cần cải thiện.';
+      color = 'var(--accent-2)';
+      tip = 'Tập trung vào minh bạch (ghi chú/ trích dẫn) và kiểm chứng nguồn.';
+    } else if (pct >= 60) {
+      msg = '⚠️ Trung bình — Bạn đã có ý thức sử dụng AI, cần hoàn thiện hơn.';
+      color = 'var(--warn)';
+      tip = 'Đặt mục tiêu rõ ràng trước khi dùng AI và thường xuyên kiểm chứng kết quả.';
+    } else {
+      msg = '⚡ Cần cải thiện — Hãy xem lại cách dùng AI để tránh lệ thuộc và sai lệch.';
+      color = 'var(--danger)';
+      tip = 'Bắt đầu từ việc ghi chép lại kết quả AI, kiểm chứng thông tin, và học cách prompt rõ ràng.';
+    }
+    evalBox.textContent = msg;
+    evalBox.style.borderLeft = '4px solid ' + color;
+    adviceEl.textContent = tip;
+
+    // Per-section stats
+    const chips = sections.map(sec => {
+      const secBoxes = checkboxes.filter(cb => cb.dataset.section === sec);
+      const secTotal = secBoxes.length;
+      const secChecked = secBoxes.filter(cb => cb.checked).length;
+      const secPct = secTotal ? Math.round((secChecked/secTotal)*100) : 0;
+      return {id:sec, pct:secPct, checked:secChecked, total:secTotal};
+    });
+    // render chips
+    sectionChips.innerHTML = '';
+    chips.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'chip';
+      const labelMap = {personal:'Cá nhân hóa', purpose:'Mục đích', transparency:'Minh bạch', ethics:'Kiểm chứng'};
+      el.textContent = `${labelMap[c.id]}: ${c.pct}% (${c.checked}/${c.total})`;
+      sectionChips.appendChild(el);
+    });
+  }
+
+  // Attach listeners
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', calc);
+    // Make label clickable
+    const label = document.querySelector(`label[for="${cb.id}"]`);
+    if (label) {
+      label.addEventListener('click', (e) => {
+        if (e.target === label) {
+          cb.checked = !cb.checked;
+          calc();
+        }
+      });
+    }
+  });
+
+  // Buttons
+  saveBtn.addEventListener('click', () => {
+    const state = {};
+    checkboxes.forEach(cb => state[cb.id] = cb.checked);
+    try {
+      localStorage.setItem('ai_checklist_state_v1', JSON.stringify(state));
+      saveBtn.textContent = '✅ Đã lưu';
+      setTimeout(() => saveBtn.textContent = '💾 Lưu trạng thái', 1400);
+    } catch(e) {
+      alert('Không thể lưu trạng thái. Vui lòng kiểm tra cài đặt trình duyệt.');
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('Bạn có chắc muốn đặt lại tất cả lựa chọn?')) return;
+    checkboxes.forEach(cb => cb.checked = false);
+    try {
+      localStorage.removeItem('ai_checklist_state_v1');
+    } catch(e) { /* ignore */ }
+    calc();
+  });
+
+  // load if exists
+  try {
+    const saved = localStorage.getItem('ai_checklist_state_v1');
+    if (saved) {
+      const obj = JSON.parse(saved);
+      checkboxes.forEach(cb => { 
+        if (obj[cb.id] !== undefined) cb.checked = !!obj[cb.id]; 
+      });
+    }
+  } catch(e) { /* ignore parsing errors */ }
+  
+  // Initial calculation
+  calc();
+
+  // export json
+  exportBtn.addEventListener('click', ()=> {
+    const result = {
+      timestamp: new Date().toISOString(),
+      total: total,
+      checked: checkboxes.filter(cb=>cb.checked).map(cb=>cb.id),
+      percent: Math.round((checkboxes.filter(cb=>cb.checked).length/total)*100)
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(result,null,2));
+    const dl = document.createElement('a');
+    dl.setAttribute('href', dataStr);
+    dl.setAttribute('download','ai_checklist_result.json');
+    document.body.appendChild(dl);
+    dl.click();
+    dl.remove();
+  });
+
+  // copy to clipboard
+  shareBtn.addEventListener('click', async ()=> {
+    const result = {
+      timestamp: new Date().toLocaleString('vi-VN'),
+      total: total,
+      checkedCount: checkboxes.filter(cb=>cb.checked).length,
+      percent: Math.round((checkboxes.filter(cb=>cb.checked).length/total)*100),
+      checkedItems: checkboxes.filter(cb=>cb.checked).map(cb=>{
+        const label = document.querySelector('label[for="'+cb.id+'"]');
+        return label ? label.textContent.trim() : cb.id;
+      })
+    };
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(result,null,2));
+      shareBtn.textContent = '✓ Đã sao chép';
+      setTimeout(()=> shareBtn.textContent = '📋 Sao chép', 1200);
+    } catch(e){
+      alert('Trình duyệt không cho phép sao chép tự động. Vui lòng sử dụng Export JSON.');
+    }
+  });
+})();
+</script>
+</body>
+</html>
